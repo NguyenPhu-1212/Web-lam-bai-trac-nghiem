@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý tài chính</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+  <button onclick="toggleDark()">🌙 Dark Mode</button>
+
+  <h1>Quản lý tài chính doanh nghiệp5💰</h1>
+
+  <!-- NHẬP DỮ LIỆU -->
+  <input id="type" placeholder="thu / chi">
+  <input id="amount" type="number" placeholder="số tiền">
+  <input id="category" placeholder="loại">
+  <input id="date" type="date">
+
+  <button class="add-btn" onclick="addTransaction()">Thêm</button>
+
+  <br><br>
+
+  <!-- LỌC NGÀY -->
+  <input id="filterDate" type="date">
+  <button onclick="filterData()">Lọc ngày</button>
+
+  <!-- LỌC THÁNG -->
+  <input id="filterMonth" type="month">
+  <button onclick="filterByMonth()">Thống kê tháng</button>
+
+  <!-- EXPORT -->
+  <button onclick="exportExcel()">Xuất Excel</button>
+
+  <h2>Danh sách</h2>
+  <ul id="list"></ul>
+
+  <h2 id="total"></h2>
+
+  <canvas id="myChart"></canvas>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
