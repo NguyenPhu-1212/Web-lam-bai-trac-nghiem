@@ -1,1 +1,509 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Quiz 30/4 — Ngày Giải Phóng</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Space+Mono:wght@700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --red:#D0021B;--red-dark:#A50016;--red-light:#FF2A40;
+  --gold:#FFD700;--gold2:#FFC300;
+  --cream:#FFF8EC;--surface:#FFFFFF;--surface2:#FFF0F0;
+  --border:#F5C0C0;--border2:#E8D0D0;
+  --text:#2A0005;--text2:#7A2030;--text3:#B05060;
+  --green:#1A9E50;--green-bg:rgba(26,158,80,0.08);
+  --radius:20px;--radius-sm:12px;--radius-xs:8px;
+}
+html,body{height:100%;background:var(--cream);color:var(--text);font-family:'Nunito',sans-serif;font-size:15px;line-height:1.5;display:flex;justify-content:center;align-items:flex-start;}
+.phone-wrap{width:100%;max-width:420px;min-height:100vh;background:var(--cream);position:relative;overflow:hidden;display:flex;flex-direction:column;}
 
+/* Particles */
+@keyframes sparkle{0%,100%{opacity:0.5;transform:scale(1);}50%{opacity:1;transform:scale(1.4);}}
+.spark{position:fixed;pointer-events:none;z-index:0;border-radius:50%;animation:sparkle ease-in-out infinite;}
+
+/* Screens */
+.screen{display:none;flex-direction:column;flex:1;position:relative;z-index:1;}
+.screen.active{display:flex;}
+
+/* ===== RED BANNER (shared) ===== */
+.red-banner{
+  width:calc(100% + 44px);margin-left:-22px;
+  background:linear-gradient(160deg,var(--red) 0%,var(--red-dark) 100%);
+  padding:32px 22px 50px;text-align:center;position:relative;overflow:hidden;flex-shrink:0;
+}
+.red-banner.narrow{padding:18px 22px 40px;}
+.red-banner::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:36px;background:var(--cream);border-radius:50% 50% 0 0/28px 28px 0 0;}
+
+/* VN Flag */
+.vn-flag{width:88px;height:58px;border-radius:5px;background:var(--red);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 6px 24px rgba(0,0,0,0.35);animation:flag-wave 2.5s ease-in-out infinite;transform-origin:left center;border:1.5px solid rgba(255,255,255,0.25);}
+@keyframes flag-wave{0%,100%{transform:skewX(0);}25%{transform:skewX(1.5deg) skewY(.4deg);}75%{transform:skewX(-1deg) skewY(-.3deg);}}
+.star-svg{width:30px;height:30px;fill:var(--gold);filter:drop-shadow(0 2px 4px rgba(0,0,0,.3));}
+.banner-date{font-size:12px;font-weight:800;letter-spacing:3px;color:rgba(255,255,255,.7);text-transform:uppercase;margin-bottom:5px;}
+.banner-title{font-size:24px;font-weight:900;color:#fff;line-height:1.2;text-shadow:0 2px 8px rgba(0,0,0,.3);}
+.banner-title span{color:var(--gold);}
+.banner-sub{font-size:12px;color:rgba(255,255,255,.8);margin-top:5px;}
+.gold-stars{display:flex;gap:6px;justify-content:center;margin:10px 0 0;}
+.gs{font-size:13px;color:var(--gold);}
+
+/* ===== REGISTER SCREEN ===== */
+#screen-register{padding:0 22px 36px;justify-content:space-between;}
+.reg-body{flex:1;display:flex;flex-direction:column;gap:14px;margin-top:20px;}
+.reg-body h2{font-size:16px;font-weight:800;color:var(--text2);text-align:center;margin-bottom:2px;}
+.reg-body p{font-size:13px;color:var(--text3);text-align:center;margin-bottom:8px;}
+.field{display:flex;flex-direction:column;gap:5px;}
+.field label{font-size:12px;font-weight:800;color:var(--text2);letter-spacing:.5px;text-transform:uppercase;}
+.field input{
+  width:100%;padding:13px 15px;border:1.5px solid var(--border2);
+  border-radius:var(--radius-sm);font-size:15px;font-weight:600;
+  font-family:'Nunito',sans-serif;color:var(--text);background:var(--surface);
+  outline:none;transition:border-color .15s;
+}
+.field input:focus{border-color:var(--red);}
+.field input::placeholder{color:var(--text3);font-weight:400;}
+.err-msg{font-size:12px;color:var(--red);font-weight:700;display:none;margin-top:2px;}
+.err-msg.show{display:block;}
+.rules-box{background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;}
+.rules-box p{font-size:12px;color:var(--text2);font-weight:700;margin-bottom:6px;}
+.rules-box ul{padding-left:16px;}
+.rules-box li{font-size:12px;color:var(--text3);margin-bottom:3px;font-weight:600;}
+.btn-red{
+  width:100%;padding:17px;background:linear-gradient(135deg,var(--red),var(--red-light));
+  color:#fff;border:none;border-radius:var(--radius);font-size:16px;font-weight:900;cursor:pointer;
+  font-family:'Nunito',sans-serif;box-shadow:0 10px 32px rgba(208,2,27,.38);
+  transition:transform .15s,box-shadow .15s;display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-top:8px;
+}
+.btn-red:active{transform:scale(.97);box-shadow:0 5px 16px rgba(208,2,27,.28);}
+
+/* ===== QUIZ SCREEN ===== */
+#screen-quiz{padding:0 16px 28px;}
+.quiz-top{
+  width:calc(100% + 32px);margin-left:-16px;
+  background:linear-gradient(160deg,var(--red) 0%,var(--red-dark) 100%);
+  padding:14px 16px 30px;margin-bottom:-16px;
+}
+.quiz-top-row{display:flex;align-items:center;justify-content:space-between;}
+.q-label-top{font-size:10px;color:rgba(255,255,255,.65);font-weight:800;letter-spacing:1.5px;text-transform:uppercase;}
+.q-fraction{font-size:17px;font-weight:900;color:#fff;}
+.q-fraction em{color:rgba(255,255,255,.5);font-style:normal;}
+
+/* Global countdown display */
+.global-timer{
+  background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.25);
+  border-radius:10px;padding:6px 12px;text-align:center;min-width:72px;
+}
+.global-timer .t-label{font-size:10px;color:rgba(255,255,255,.65);font-weight:700;letter-spacing:1px;}
+.global-timer .t-val{font-size:18px;font-weight:900;font-family:'Space Mono',monospace;color:#fff;letter-spacing:1px;}
+.global-timer.urgent .t-val{color:var(--gold);animation:pulse .7s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
+
+.prog-wrap{margin-top:10px;}
+.prog-track{height:4px;background:rgba(255,255,255,.2);border-radius:99px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--gold),#FFE566);transition:width .4s cubic-bezier(.4,0,.2,1);}
+
+/* Question body */
+.quiz-body{margin-top:24px;}
+.q-card{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius);padding:18px 16px 20px;margin-bottom:12px;
+  position:relative;overflow:hidden;box-shadow:0 3px 16px rgba(208,2,27,.07);
+}
+.q-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),var(--gold),var(--red));}
+.q-num-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(208,2,27,.08);color:var(--red);font-size:11px;font-weight:800;padding:3px 9px;border-radius:99px;margin-bottom:9px;}
+.q-text{font-size:15px;font-weight:700;line-height:1.6;color:var(--text);}
+
+/* Options — no feedback colours after pick, just highlight selected */
+.options-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.option-btn{
+  display:flex;align-items:center;gap:11px;padding:12px 13px;
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);cursor:pointer;transition:all .15s;
+  font-family:'Nunito',sans-serif;text-align:left;width:100%;
+}
+.option-btn:active:not(.disabled){transform:scale(.98);}
+.option-btn:not(.disabled):hover{border-color:var(--red);background:rgba(208,2,27,.04);}
+.option-btn.picked{border-color:var(--red);background:rgba(208,2,27,.07);}
+.option-btn.disabled{cursor:default;}
+.opt-circle{
+  width:32px;height:32px;border-radius:9px;background:var(--surface2);
+  border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:800;color:var(--text2);flex-shrink:0;transition:all .2s;
+}
+.option-btn.picked .opt-circle{background:var(--red);border-color:var(--red);color:#fff;}
+.opt-text{font-size:14px;font-weight:600;color:var(--text);flex:1;line-height:1.4;}
+
+/* Nav */
+.nav-btns{display:flex;gap:9px;}
+.btn-prev{
+  width:48px;height:48px;border-radius:var(--radius-sm);background:var(--surface);
+  border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;
+  font-size:18px;cursor:pointer;flex-shrink:0;color:var(--text2);transition:all .15s;
+}
+.btn-prev:active:not(:disabled){background:var(--surface2);}
+.btn-prev:disabled{opacity:.3;cursor:default;}
+.btn-next{
+  flex:1;height:48px;border-radius:var(--radius-sm);
+  background:linear-gradient(135deg,var(--red),var(--red-light));
+  color:#fff;border:none;font-size:14px;font-weight:900;cursor:pointer;
+  font-family:'Nunito',sans-serif;box-shadow:0 6px 20px rgba(208,2,27,.32);transition:all .15s;
+}
+.btn-next:active{transform:scale(.97);}
+#submit-row{gap:9px;}
+.btn-submit{
+  flex:1;height:48px;border-radius:var(--radius-sm);
+  background:linear-gradient(135deg,#A50016,var(--red));
+  color:#fff;border:none;font-size:14px;font-weight:900;cursor:pointer;
+  font-family:'Nunito',sans-serif;box-shadow:0 8px 24px rgba(208,2,27,.38);transition:all .15s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-submit:active{transform:scale(.97);}
+
+/* ===== TIMEOUT SCREEN ===== */
+#screen-timeout{padding:0 22px 40px;align-items:center;justify-content:center;}
+.timeout-box{text-align:center;padding:32px 20px;}
+.timeout-icon{font-size:64px;margin-bottom:16px;}
+.timeout-title{font-size:22px;font-weight:900;color:var(--red);margin-bottom:8px;}
+.timeout-sub{font-size:14px;color:var(--text2);line-height:1.7;}
+
+/* ===== RESULT SCREEN ===== */
+#screen-result{overflow-y:auto;align-items:center;padding:0;}
+.result-banner{
+  width:100%;
+  background:linear-gradient(160deg,var(--red) 0%,var(--red-dark) 100%);
+  padding:28px 22px 56px;text-align:center;position:relative;overflow:hidden;flex-shrink:0;
+}
+.result-banner::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:36px;background:var(--cream);border-radius:50% 50% 0 0/28px 28px 0 0;}
+.res-flag-mini{width:58px;height:38px;background:var(--red);border-radius:4px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(255,255,255,.3);box-shadow:0 4px 14px rgba(0,0,0,.3);}
+.res-flag-mini svg{width:20px;height:20px;fill:var(--gold);}
+.result-trophy{font-size:50px;animation:bounce-in .5s cubic-bezier(.175,.885,.32,1.275) both;}
+@keyframes bounce-in{0%{transform:scale(.2);opacity:0;}100%{transform:scale(1);opacity:1;}}
+.result-name{font-size:15px;font-weight:800;color:rgba(255,255,255,.9);margin-top:10px;}
+.result-meta{font-size:12px;color:rgba(255,255,255,.65);margin-top:3px;}
+.result-grade{font-size:20px;font-weight:900;color:#fff;margin-top:8px;}
+.result-sub{font-size:12px;color:rgba(255,255,255,.7);margin-top:4px;}
+
+.result-body{width:100%;padding:8px 20px 40px;}
+.score-display{display:flex;align-items:center;justify-content:center;gap:3px;margin:16px 0 18px;}
+.score-big{font-size:68px;font-weight:900;font-family:'Space Mono',monospace;color:var(--red);line-height:1;}
+.score-suffix{font-size:24px;font-weight:900;color:var(--text3);align-self:flex-end;margin-bottom:10px;}
+.score-denom{font-size:18px;font-weight:700;color:var(--text3);align-self:flex-end;margin-bottom:12px;margin-left:2px;}
+
+.result-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:18px;}
+.r-stat{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:13px 8px;text-align:center;}
+.r-stat .rv{font-size:22px;font-weight:900;}
+.r-stat .rl{font-size:11px;color:var(--text3);font-weight:700;margin-top:3px;}
+.rv-green{color:#0E7A3C;} .rv-red{color:var(--red);} .rv-gray{color:var(--text3);}
+
+.result-info-box{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:14px;
+}
+.result-info-box .ri-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);}
+.result-info-box .ri-row:last-child{border-bottom:none;}
+.ri-label{font-size:12px;font-weight:700;color:var(--text3);}
+.ri-val{font-size:13px;font-weight:800;color:var(--text);}
+
+.done-note{background:rgba(208,2,27,.06);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;text-align:center;font-size:12px;color:var(--text2);font-weight:700;line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="phone-wrap">
+<div id="particles"></div>
+
+<!-- ===== REGISTER SCREEN ===== -->
+<div class="screen active" id="screen-register">
+  <div class="red-banner" style="width:calc(100% + 44px);margin-left:-22px;">
+    <div class="vn-flag">
+      <svg class="star-svg" viewBox="0 0 51 48"><path d="M25.5 2L31.8 19.8H51L35.6 30.2L41.9 48L25.5 37.6L9.1 48L15.4 30.2L0 19.8H19.2Z"/></svg>
+    </div>
+    <div class="banner-date">30 tháng 4 · 1975 — 2025</div>
+    <div class="banner-title">Quiz<br/><span>Lịch Sử Việt Nam</span></div>
+    <div class="banner-sub">Kỷ niệm 50 năm Ngày Giải Phóng Miền Nam</div>
+    <div class="gold-stars"><span class="gs">★</span><span class="gs">★</span><span class="gs">★</span><span class="gs">★</span><span class="gs">★</span></div>
+  </div>
+
+  <div class="reg-body">
+    <div>
+      <h2>Đăng ký tham gia</h2>
+      <p>Vui lòng điền đầy đủ thông tin trước khi bắt đầu</p>
+    </div>
+    <div class="field">
+      <label>Họ và tên *</label>
+      <input type="text" id="inp-name" placeholder="Nguyễn Văn A" maxlength="60"/>
+      <span class="err-msg" id="err-name">Vui lòng nhập họ và tên</span>
+    </div>
+    <div class="field">
+      <label>Chức vụ *</label>
+      <input type="text" id="inp-role" placeholder="Ví dụ: Trưởng phòng, Nhân viên..." maxlength="60"/>
+      <span class="err-msg" id="err-role">Vui lòng nhập chức vụ</span>
+    </div>
+    <div class="field">
+      <label>Đơn vị *</label>
+      <input type="text" id="inp-unit" placeholder="Ví dụ: Phòng Kỹ thuật, Chi nhánh HN..." maxlength="80"/>
+      <span class="err-msg" id="err-unit">Vui lòng nhập đơn vị</span>
+    </div>
+    <div class="rules-box">
+      <p>📋 Lưu ý quan trọng:</p>
+      <ul>
+        <li>Bài thi gồm <strong>20 câu</strong> hỏi trắc nghiệm</li>
+        <li>Thời gian: <strong>15 phút</strong> cho toàn bài</li>
+        <li>Mỗi câu chỉ được chọn <strong>1 đáp án</strong></li>
+        <li>Chỉ được thi <strong>1 lần duy nhất</strong></li>
+        <li>Kết quả hiển thị ngay sau khi nộp bài</li>
+      </ul>
+    </div>
+    <button class="btn-red" onclick="startQuiz()">🚀 Bắt đầu làm bài</button>
+  </div>
+</div>
+
+<!-- ===== QUIZ SCREEN ===== -->
+<div class="screen" id="screen-quiz">
+  <div class="quiz-top">
+    <div class="quiz-top-row">
+      <div>
+        <div class="q-label-top">Câu hỏi</div>
+        <div class="q-fraction"><span id="qn">1</span><em> / 20</em></div>
+      </div>
+      <div class="global-timer" id="global-timer">
+        <div class="t-label">⏱ CÒN LẠI</div>
+        <div class="t-val" id="t-val">15:00</div>
+      </div>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:5%"></div></div>
+    </div>
+  </div>
+
+  <div class="quiz-body">
+    <div class="q-card">
+      <div class="q-num-badge" id="q-badge">⭐ Câu 1</div>
+      <div class="q-text" id="qtext"></div>
+    </div>
+    <div class="options-list" id="options"></div>
+    <div class="nav-btns" id="nav-btns">
+      <button class="btn-prev" id="btn-prev" onclick="prevQ()" disabled>←</button>
+      <button class="btn-next" id="btn-next" onclick="nextQ()">Tiếp theo →</button>
+    </div>
+    <div id="submit-row" style="display:none;margin-top:9px;gap:9px;">
+      <button class="btn-prev" id="btn-prev2" onclick="prevQ()">←</button>
+      <button class="btn-submit" onclick="submitQuiz()"> Nộp bài ngay</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TIMEOUT SCREEN ===== -->
+<div class="screen" id="screen-timeout" style="padding:0 22px 40px;align-items:center;justify-content:center;">
+  <div class="timeout-box">
+    <div class="timeout-icon">⏰</div>
+    <div class="timeout-title">Hết giờ!</div>
+    <div class="timeout-sub">Thời gian làm bài đã kết thúc.<br/>Đang tính kết quả của bạn...</div>
+  </div>
+</div>
+
+<!-- ===== RESULT SCREEN ===== -->
+<div class="screen" id="screen-result"></div>
+
+</div>
+<script>
+// ===== PARTICLES =====
+(function(){
+  const colors=['#FFD700','#FF2A40','#FF8C00','#FFC300','#fff'];
+  const wrap=document.getElementById('particles');
+  for(let i=0;i<16;i++){
+    const el=document.createElement('div');
+    el.className='spark';
+    const sz=Math.random()*4+2;
+    el.style.cssText=`width:${sz}px;height:${sz}px;background:${colors[Math.floor(Math.random()*colors.length)]};left:${Math.random()*100}%;top:${Math.random()*55}%;animation-duration:${2.5+Math.random()*3}s;animation-delay:${Math.random()*3}s;`;
+    wrap.appendChild(el);
+  }
+})();
+
+// ===== DATA =====
+const questions=[
+  {q:"Ngày 30/4/1975 đánh dấu sự kiện lịch sử gì?",opts:["Thành lập nước CHXHCN Việt Nam","Giải phóng miền Nam, thống nhất đất nước","Ký kết Hiệp định Paris","Chiến thắng Điện Biên Phủ"],ans:1},
+  {q:"Chiến dịch Hồ Chí Minh lịch sử kết thúc vào ngày nào?",opts:["26/4/1975","28/4/1975","30/4/1975","01/5/1975"],ans:2},
+  {q:"Xe tăng nào đầu tiên húc đổ cổng Dinh Độc Lập ngày 30/4/1975?",opts:["Xe tăng số 390","Xe tăng số 843","Xe tăng số 879","Xe tăng số 721"],ans:1},
+  {q:"Thủ đô của Việt Nam là thành phố nào?",opts:["Hà Nội","Hồ Chí Minh","Đà Nẵng","Huế"],ans:0},
+  {q:"Nước Việt Nam Dân chủ Cộng hòa được thành lập năm nào?",opts:["1930","1945","1954","1976"],ans:1},
+  {q:"Thành phố Sài Gòn được đổi tên thành gì sau năm 1975?",opts:["TP. Hà Nội","TP. Đà Nẵng","TP. Hồ Chí Minh","TP. Cần Thơ"],ans:2},
+  {q:"Hiệp định Paris về chấm dứt chiến tranh ở Việt Nam được ký năm nào?",opts:["1968","1971","1973","1975"],ans:2},
+  {q:"Cờ Tổ quốc Việt Nam có màu nền gì?",opts:["Xanh","Vàng","Đỏ","Trắng"],ans:2},
+  {q:"Quốc kỳ Việt Nam có hình ngôi sao mấy cánh?",opts:["3 cánh","4 cánh","5 cánh","6 cánh"],ans:2},
+  {q:"Bác Hồ đọc Tuyên ngôn Độc lập tại đâu vào ngày 2/9/1945?",opts:["Hội trường Ba Đình","Quảng trường Ba Đình","Sân vận động Hàng Đẫy","Hồ Hoàn Kiếm"],ans:1},
+  {q:"Chiến thắng Điện Biên Phủ diễn ra năm nào?",opts:["1950","1952","1954","1956"],ans:2},
+  {q:"Sông nào dài nhất Việt Nam tính trên lãnh thổ nước ta?",opts:["Sông Hồng","Sông Đà","Sông Mê Kông","Sông Đồng Nai"],ans:0},
+  {q:"Núi Fansipan — nóc nhà Đông Dương — cao bao nhiêu mét?",opts:["3.012 m","3.143 m","3.143 m","3.143 m"],ans:1},
+  {q:"Việt Nam chính thức thống nhất và đổi tên thành CHXHCN Việt Nam vào năm nào?",opts:["1975","1976","1977","1980"],ans:1},
+  {q:"Ai là vị Đại tướng chỉ huy Chiến dịch Điện Biên Phủ?",opts:["Võ Nguyên Giáp","Lê Duẩn","Trường Chinh","Phạm Văn Đồng"],ans:0},
+  {q:"Ngày Quốc khánh Việt Nam là ngày nào?",opts:["30/4","19/5","2/9","1/1"],ans:2},
+  {q:"Thủ đô Hà Nội có tên gọi nào sau đây vào thời Lý?",opts:["Thăng Long","Đại La","Đông Đô","Hà Nội"],ans:0},
+  {q:"Bài hát nào được chọn làm Quốc ca Việt Nam?",opts:["Tiến về Hà Nội","Giải phóng miền Nam","Tiến quân ca","Đoàn quân Việt Nam đi"],ans:2},
+  {q:"Tổng thống cuối cùng của chính quyền Sài Gòn là ai?",opts:["Nguyễn Văn Thiệu","Dương Văn Minh","Nguyễn Cao Kỳ","Trần Văn Hương"],ans:1},
+  {q:"Khẩu hiệu nổi tiếng của Chủ tịch Hồ Chí Minh về ý chí độc lập dân tộc?",opts:["Độc lập — Tự do — Hạnh phúc","Không có gì quý hơn độc lập tự do","Nước Việt Nam là một, dân tộc Việt Nam là một","Đoàn kết, đoàn kết, đại đoàn kết"],ans:1},
+];
+
+const TOTAL_SECS=15*60;
+const N=questions.length;
+
+let userInfo={name:'',role:'',unit:''};
+let answers=Array(N).fill(-1);
+let current=0;
+let timerInt=null;
+let secsLeft=TOTAL_SECS;
+let quizDone=false;
+
+// ===== HELPERS =====
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function fmtTime(s){
+  const m=Math.floor(s/60),sc=s%60;
+  return m+':'+(sc<10?'0':'')+sc;
+}
+
+// ===== REGISTER =====
+function startQuiz(){
+  const name=document.getElementById('inp-name').value.trim();
+  const role=document.getElementById('inp-role').value.trim();
+  const unit=document.getElementById('inp-unit').value.trim();
+  let ok=true;
+  document.getElementById('err-name').classList.toggle('show',!name); if(!name)ok=false;
+  document.getElementById('err-role').classList.toggle('show',!role); if(!role)ok=false;
+  document.getElementById('err-unit').classList.toggle('show',!unit); if(!unit)ok=false;
+  if(!ok)return;
+  userInfo={name,role,unit};
+  // Disable register screen inputs so cannot go back
+  showScreen('screen-quiz');
+  render();
+  startGlobalTimer();
+}
+
+// ===== GLOBAL TIMER =====
+function startGlobalTimer(){
+  secsLeft=TOTAL_SECS;
+  updateTimerDisplay();
+  timerInt=setInterval(()=>{
+    secsLeft--;
+    updateTimerDisplay();
+    if(secsLeft<=0){
+      clearInterval(timerInt);
+      timeOut();
+    }
+  },1000);
+}
+
+function updateTimerDisplay(){
+  const el=document.getElementById('global-timer');
+  document.getElementById('t-val').textContent=fmtTime(secsLeft);
+  el.className='global-timer'+(secsLeft<=120?' urgent':'');
+}
+
+function timeOut(){
+  quizDone=true;
+  showScreen('screen-timeout');
+  setTimeout(()=>showResult(),2000);
+}
+
+// ===== RENDER QUESTION =====
+function render(){
+  const q=questions[current];
+  const labels=['A','B','C','D'];
+  document.getElementById('qn').textContent=current+1;
+  document.getElementById('q-badge').innerHTML='⭐ Câu '+(current+1);
+  document.getElementById('qtext').textContent=q.q;
+  document.getElementById('prog-fill').style.width=`${((current+1)/N)*100}%`;
+
+  const optsEl=document.getElementById('options');
+  optsEl.innerHTML=q.opts.map((o,i)=>{
+    const picked=answers[current];
+    let cls='option-btn';
+    if(picked===i) cls+=' picked';
+    // no correct/wrong revealed — just picked
+    return `<button class="${cls}" onclick="pick(${i})">
+      <div class="opt-circle">${labels[i]}</div>
+      <div class="opt-text">${o}</div>
+    </button>`;
+  }).join('');
+
+  document.getElementById('btn-prev').disabled=current===0;
+  const isLast=current===N-1;
+  document.getElementById('nav-btns').style.display=isLast?'none':'flex';
+  document.getElementById('submit-row').style.display=isLast?'flex':'none';
+  document.getElementById('btn-prev2').disabled=current===0;
+}
+
+function pick(i){
+  if(quizDone)return;
+  answers[current]=i;
+  render();
+}
+
+function nextQ(){if(current<N-1){current++;render();}}
+function prevQ(){if(current>0){current--;render();}}
+
+// ===== SUBMIT =====
+function submitQuiz(){
+  if(quizDone)return;
+  const unanswered=answers.filter(a=>a===-1).length;
+  if(unanswered>0){
+    const go=confirm(`Bạn còn ${unanswered} câu chưa trả lời. Bạn có chắc muốn nộp bài?`);
+    if(!go)return;
+  }
+  clearInterval(timerInt);
+  quizDone=true;
+  showResult();
+}
+
+// ===== RESULT =====
+function showResult(){
+  const correct=answers.filter((a,i)=>a===questions[i].ans).length;
+  const wrong=answers.filter((a,i)=>a>=0&&a!==questions[i].ans).length;
+  const skipped=answers.filter(a=>a<0).length;
+  const timeUsed=TOTAL_SECS-secsLeft;
+  const m=Math.floor(timeUsed/60),s=timeUsed%60;
+  let grade='',emoji='';
+  if(correct>=18){grade='Xuất sắc!!!';emoji='🏆';}
+  else if(correct>=15){grade='Giỏi lắm!!!';emoji='🎉';}
+  else if(correct>=10){grade='Khá tốt!!!';emoji='👍';}
+  else{grade='Trung bình!!!';emoji='📖';}
+
+  const rv=document.getElementById('screen-result');
+  rv.innerHTML=`
+    <div class="result-banner">
+      <div class="res-flag-mini">
+        <svg viewBox="0 0 51 48"><path d="M25.5 2L31.8 19.8H51L35.6 30.2L41.9 48L25.5 37.6L9.1 48L15.4 30.2L0 19.8H19.2Z"/></svg>
+      </div>
+      <div class="result-trophy">${emoji}</div>
+      <div class="result-name">${userInfo.name}</div>
+      <div class="result-meta">${userInfo.role} · ${userInfo.unit}</div>
+      <div class="result-grade">${grade}</div>
+      <div class="result-sub">
+    <div class="result-body">
+      <div class="score-display">
+        <div class="score-big">${correct}</div>
+        <div class="score-denom"> / ${N}</div>
+      </div>
+      <div class="result-stats">
+        <div class="r-stat"><div class="rv rv-green">${correct}</div><div class="rl">Câu đúng</div></div>
+        <div class="r-stat"><div class="rv rv-red">${wrong}</div><div class="rl">Câu sai</div></div>
+        <div class="r-stat"><div class="rv rv-gray">${skipped}</div><div class="rl">Bỏ qua</div></div>
+      </div>
+      <div class="result-info-box">
+        <div class="ri-row"><span class="ri-label">Họ và tên</span><span class="ri-val">${userInfo.name}</span></div>
+        <div class="ri-row"><span class="ri-label">Chức vụ</span><span class="ri-val">${userInfo.role}</span></div>
+        <div class="ri-row"><span class="ri-label">Đơn vị</span><span class="ri-val">${userInfo.unit}</span></div>
+        <div class="ri-row"><span class="ri-label">Số câu đúng</span><span class="ri-val" style="color:var(--green)">${correct} / ${N}</span></div>
+        <div class="ri-row"><span class="ri-label">Thời gian làm bài</span><span class="ri-val">${m} phút ${s} giây</span></div>
+      </div>
+      <div class="done-note">🔒 Bài thi đã hoàn thành.<br/>Bạn không thể làm lại bài thi này.</div>
+    </div>
+  `;
+  showScreen('screen-result');
+}
+</script>
+</body>
+</html>
